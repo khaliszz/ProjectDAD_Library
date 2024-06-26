@@ -99,7 +99,7 @@ This project is a library management system for UTeM, which includes functionali
 ### Database
 
 - phpMyAdmin: Stores data related to members, books, and borrowings.
-- Tables: Includes tables for members, books, and borrowings with appropriate foreign key relationships.
+- Tables: Includes tables for members, books, and borrowings.
 
 ## How to Run
 
