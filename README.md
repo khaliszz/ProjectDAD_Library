@@ -10,7 +10,7 @@ This project is a library management system for UTeM, which includes functionali
    - Allows university members to log in, register, borrow books, return books, and view their borrowing history.
 
 2. Staff Client Application
-   - Allows library staff to view borrowed books, manage returns, and approve member registration requests.
+   - Allows library staff to view borrowed books and returns, and approve member registration requests.
 
 3. PHP Server with Database
    - Handles the logic and database operations, providing RESTful API endpoints for the client applications.
@@ -26,9 +26,9 @@ This project is a library management system for UTeM, which includes functionali
 ### Member Endpoints
 
 - Log In: GET /LibraryServer.php?action=login&username={username}&password={password}
-- Register: POST /LibraryServer.php?action=register
-- Borrow Book: POST /LibraryServer.php?action=borrowBook&memberID={memberID}&bookID={bookID}
-- Return Book: POST /LibraryServer.php?action=returnBook&memberID={memberID}&bookID={bookID}
+- Register: GET /LibraryServer.php?action=register
+- Borrow Book: GET /LibraryServer.php?action=borrowBook&memberID={memberID}&bookID={bookID}
+- Return Book: GET /LibraryServer.php?action=returnBook&memberID={memberID}&bookID={bookID}
 - View Borrow History: GET /LibraryServer.php?action=viewBorrowHistory&memberID={memberID}
 - Retrieve Borrowed Books: GET /LibraryServer.php?action=retrieveBorrowedBooksByMember&memberID={memberID}
 
@@ -37,7 +37,7 @@ This project is a library management system for UTeM, which includes functionali
 - View Borrowed Books: GET /LibraryServer.php?action=viewBorrowedBooks
 - View Returned Books: GET /LibraryServer.php?action=viewReturnedBooks
 - Pending Member Registrations: GET /LibraryServer.php?action=viewPendingRegistrations
-- Approve Member: POST /LibraryServer.php?action=approveMember&memberID={memberID}
+- Approve Member: GET /LibraryServer.php?action=approveMember&memberID={memberID}
 - Retrieve Pending Members: GET /LibraryServer.php?action=retrievePendingMember
 
 ## Middleware Functions/Features
@@ -59,34 +59,35 @@ This project is a library management system for UTeM, which includes functionali
   - memberStatus (ENUM: 'PENDING', 'APPROVED')
 
 - Books Table
-  - bookID (INT, PRIMARY KEY)
-  - title (VARCHAR)
-  - author (VARCHAR)
+  - BookID (INT, PRIMARY KEY)
+  - Title (VARCHAR)
+  - ISBN (VARCHAR)
+  - PublishedYear (YEAR)
+  - Category (VARCHAR)
   - copiesAvailable (INT)
 
-- Borrowings Table
-  - borrowID (INT, PRIMARY KEY)
-  - memberID (INT, FOREIGN KEY REFERENCES Members(memberID))
-  - bookID (INT, FOREIGN KEY REFERENCES Books(bookID))
+- borrowedbook Table
+  - id (INT, PRIMARY KEY)
+  - Title (VARCHAR)
+  - ISBN (VARCHAR)
   - dateBorrowed (DATE)
-  - dateReturned (DATE)
   - status (ENUM: 'ONGOING', 'RETURNED')
 
 ## Project Structure
 
 ### Member Client Application
 
-- Login Functionality: Allows approved members to log in.
+- Login Functionality: Allows only the approved members to log in.
 - Registration Functionality: Allows new members to register; their status is set to PENDING until approved by staff.
 - Borrow Book: Allows members to search for books and borrow them.
-- Return Book: Allows members to return borrowed books, highlighting overdue books.
+- Return Book: Allows members to return borrowed books, highlighting overdue books that had been more than 3 days.
 - View Borrow History: Displays the borrowing history of the member.
 
 ### Staff Client Application
 
 - View Borrowed Books: Allows staff to search and view currently borrowed books.
 - View Returned Books: Allows staff to search and view returned books.
-- Pending Member Registrations: Allows staff to view and approve pending member registration requests.
+- Pending Member Registrations: Allows staff to view, approve or reject pending member registration requests.
 
 ### PHP Server
 
@@ -97,7 +98,7 @@ This project is a library management system for UTeM, which includes functionali
 
 ### Database
 
-- MariaDB: Stores data related to members, books, and borrowings.
+- phpMyAdmin: Stores data related to members, books, and borrowings.
 - Tables: Includes tables for members, books, and borrowings with appropriate foreign key relationships.
 
 ## How to Run
@@ -110,6 +111,9 @@ This project is a library management system for UTeM, which includes functionali
 
 3. Run Client Applications:
    - Execute the member and staff client applications on different machines or environments as needed.
-   
+
+IMPORTANT NOTES: 
+1. For PHP Server side, turn off the firewall.
+2. Change the URL IP address, insert the PHP Server Side IP address.
 
 
