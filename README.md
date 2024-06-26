@@ -1,4 +1,4 @@
-![architecture-diagram](https://github.com/khaliszz/ProjectDAD_Library/assets/173928227/0fc4a841-2a21-44c0-9240-16cf94f86f6a)# UTeM Library System
+# UTeM Library System
 
 ## Overview
 
@@ -20,7 +20,7 @@ This project is a library management system for UTeM, which includes functionali
 ![Architecture Diagram](architecture-diagram.jpg)
 
 ## URL Endpoints (PHP Server)
-![URL Endpoints (PHP Server)] ([Uploading dbRent.php…]()
+![URL Endpoints (PHP Server)](LibraryServer.php)
 
 
 ### Member Endpoints
