@@ -28,7 +28,6 @@ The UTeM Library System is designed to manage book rentals and returns for unive
 
 The system architecture consists of the Member Application, Staff Application, Middleware, and a centralized Database. Below is the architecture diagram:
 
-![UTeM Library System Architecture](./UTeM_Library_System_Architecture.png)
 
 ## Middleware
 
