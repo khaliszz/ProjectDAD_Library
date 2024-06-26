@@ -48,7 +48,7 @@ This project is a library management system for UTeM, which includes functionali
 - Data Retrieval: Provides endpoints to retrieve borrowing history, current borrowings, and member details.
 
 ## Database and Tables
-
+![Database](projectdad.sql)
 
 ### Tables
 
