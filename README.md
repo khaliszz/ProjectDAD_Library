@@ -17,7 +17,7 @@ This project is a library management system for UTeM, which includes functionali
 
 ## Architecture Diagram
 
-![Architecture Diagram](path/to/architecture-diagram.png)
+![Architecture Diagram](architecture-diagram.png)
 
 ## URL Endpoints (PHP Server)
 ![URL Endpoints (PHP Server)] ([Uploading dbRent.php…]()
