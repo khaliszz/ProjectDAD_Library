@@ -2,66 +2,120 @@
 
 ## Overview
 
-The UTeM Library System is designed to manage book rentals and returns for university members and staff. It includes multiple applications interacting through a middleware layer with a centralized database.
+This project is a library management system for UTeM, which includes functionalities for both members and staff to manage book borrowings and returns.
 
-## Applications
+## Applications Involved
 
-### 1. Member Application
-- **Purpose**: Allows university members to register, log in, borrow books, return books, and view their borrowing history.
-- **Main Functions**:
-  - **Log In**: Only approved members can log in.
-  - **Register**: Register new members and handle pending approval.
-  - **Borrow Book**: Search, borrow, and manage book borrowings.
-  - **Return Book**: Return books, highlighting those borrowed for more than 3 days.
-  - **History**: View borrowing history.
-  - **Log Out**: End the session.
+1. Member Client Application
+   - Allows university members to log in, register, borrow books, return books, and view their borrowing history.
 
-### 2. Staff Application
-- **Purpose**: Provides staff with tools to view book borrowings, returns, and manage member registrations.
-- **Main Functions**:
-  - **View Borrowed Books**: Search and view currently borrowed books.
-  - **View Returned Books**: Search and view returned books.
-  - **Pending Registrations**: Approve or reject pending member registrations.
-  - **Log Out**: End the session.
+2. Staff Client Application
+   - Allows library staff to view borrowed books, manage returns, and approve member registration requests.
 
-## Architecture
+3. PHP Server with Database
+   - Handles the logic and database operations, providing RESTful API endpoints for the client applications.
 
-The system architecture consists of the Member Application, Staff Application, Middleware, and a centralized Database. Below is the architecture diagram:
+## Architecture Diagram
+
+![Architecture Diagram](path/to/architecture-diagram.png)
+
+## URL Endpoints (PHP Server)
+![URL Endpoints (PHP Server)] ([Uploading dbRent.php…]()
 
 
-## Middleware
+### Member Endpoints
 
-### List of URL Endpoints (RESTful)
-- **retrieveBorrowedBooksByMember**: Retrieves borrowed books for a specific member.
-- **retrievePendingMember**: Retrieves pending member registration requests.
-- **approveMember**: Approves a pending member registration.
-- **borrowBook**: Processes book borrowing.
-- **returnBook**: Processes book return.
-- **loginMember**: Handles member login.
-- **registerMember**: Handles member registration.
+- Log In: GET /LibraryServer.php?action=login&username={username}&password={password}
+- Register: POST /LibraryServer.php?action=register
+- Borrow Book: POST /LibraryServer.php?action=borrowBook&memberID={memberID}&bookID={bookID}
+- Return Book: POST /LibraryServer.php?action=returnBook&memberID={memberID}&bookID={bookID}
+- View Borrow History: GET /LibraryServer.php?action=viewBorrowHistory&memberID={memberID}
+- Retrieve Borrowed Books: GET /LibraryServer.php?action=retrieveBorrowedBooksByMember&memberID={memberID}
 
-### Functions/Features
-- **Member Management**: Registering new members, approving memberships, and handling member logins.
-- **Book Management**: Borrowing and returning books, tracking borrowed and returned books, and handling overdue books.
+### Staff Endpoints
 
-## Database
+- View Borrowed Books: GET /LibraryServer.php?action=viewBorrowedBooks
+- View Returned Books: GET /LibraryServer.php?action=viewReturnedBooks
+- Pending Member Registrations: GET /LibraryServer.php?action=viewPendingRegistrations
+- Approve Member: POST /LibraryServer.php?action=approveMember&memberID={memberID}
+- Retrieve Pending Members: GET /LibraryServer.php?action=retrievePendingMember
+
+## Middleware Functions/Features
+
+- User Authentication: Validates user credentials and manages sessions.
+- Book Management: Handles book borrow and return operations, updates book availability.
+- Member Management: Manages member registrations and approvals.
+- Data Retrieval: Provides endpoints to retrieve borrowing history, current borrowings, and member details.
+
+## Database and Tables
+
 ### Tables
 
-1. **members**
-   - `memberID` (INT, PRIMARY KEY)
-   - `username` (VARCHAR)
-   - `password` (VARCHAR)
-   - `memberStatus` (ENUM: 'PENDING', 'APPROVED')
+- Members Table
+  - memberID (INT, PRIMARY KEY)
+  - username (VARCHAR)
+  - password (VARCHAR)
+  - memberStatus (ENUM: 'PENDING', 'APPROVED')
 
-2. **books**
-   - `bookID` (INT, PRIMARY KEY)
-   - `title` (VARCHAR)
-   - `isbn` (VARCHAR)
-   - `copies` (INT)
+- Books Table
+  - bookID (INT, PRIMARY KEY)
+  - title (VARCHAR)
+  - author (VARCHAR)
+  - copiesAvailable (INT)
 
-3. **borrowed_books**
-   - `borrowID` (INT, PRIMARY KEY)
-   - `memberID` (INT, FOREIGN KEY)
-   - `bookID` (INT, FOREIGN KEY)
-   - `dateBorrowed` (DATE)
-   - `status` (ENUM: 'ONGOING', 'RETURNED')
+- Borrowings Table
+  - borrowID (INT, PRIMARY KEY)
+  - memberID (INT, FOREIGN KEY REFERENCES Members(memberID))
+  - bookID (INT, FOREIGN KEY REFERENCES Books(bookID))
+  - dateBorrowed (DATE)
+  - dateReturned (DATE)
+  - status (ENUM: 'ONGOING', 'RETURNED')
+
+## Project Structure
+
+### Member Client Application
+
+- Login Functionality: Allows approved members to log in.
+- Registration Functionality: Allows new members to register; their status is set to PENDING until approved by staff.
+- Borrow Book: Allows members to search for books and borrow them.
+- Return Book: Allows members to return borrowed books, highlighting overdue books.
+- View Borrow History: Displays the borrowing history of the member.
+
+### Staff Client Application
+
+- View Borrowed Books: Allows staff to search and view currently borrowed books.
+- View Returned Books: Allows staff to search and view returned books.
+- Pending Member Registrations: Allows staff to view and approve pending member registration requests.
+
+### PHP Server
+
+- Handles API Requests: Manages the logic for handling requests from both member and staff client applications.
+- Interacts with the Database: Performs CRUD operations on the database based on client requests.
+- Authentication: Validates user credentials during login.
+- Book Borrowing and Returning: Manages the logic for borrowing and returning books, including updating book availability.
+
+### Database
+
+- MariaDB: Stores data related to members, books, and borrowings.
+- Tables: Includes tables for members, books, and borrowings with appropriate foreign key relationships.
+
+## How to Run
+
+1. Setup Database:
+   - Use the provided SQL script to set up the database schema and initial data.
+
+2. Configure PHP Server:
+   - Ensure the PHP server has access to the database and the correct configuration in LibraryServer.php.
+
+3. Run Client Applications:
+   - Execute the member and staff client applications on different machines or environments as needed.
+   
+## Contributors
+
+- Member Client Developer: [Your Name]
+- Staff Client Developer: [Your Friend's Name]
+- PHP Server and Database Developer: [Your Other Friend's Name]
+
+## License
+
+This project is licensed under the MIT License.
