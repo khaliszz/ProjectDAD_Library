@@ -103,20 +103,13 @@ This project is a library management system for UTeM, which includes functionali
 ## How to Run
 
 1. Setup Database:
-   - Use the provided SQL script to set up the database schema and initial data.
+   - Use the provided SQL script(projectdad.sql) to set up the database schema and initial data.
 
 2. Configure PHP Server:
-   - Ensure the PHP server has access to the database and the correct configuration in LibraryServer.php.
+   - Ensure the PHP server has access to the database and the correct configuration in (LibraryServer.php).
 
 3. Run Client Applications:
    - Execute the member and staff client applications on different machines or environments as needed.
    
-## Contributors
 
-- Member Client Developer: [Your Name]
-- Staff Client Developer: [Your Friend's Name]
-- PHP Server and Database Developer: [Your Other Friend's Name]
 
-## License
-
-This project is licensed under the MIT License.
