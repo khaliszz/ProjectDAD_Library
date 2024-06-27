@@ -26,9 +26,9 @@ This project is a library management system for UTeM, which includes functionali
 ### Member Endpoints
 
 - Log In: GET /LibraryServer.php?action=login&username={username}&password={password}
-- Register: GET /LibraryServer.php?action=register
-- Borrow Book: GET /LibraryServer.php?action=borrowBook&memberID={memberID}&bookID={bookID}
-- Return Book: GET /LibraryServer.php?action=returnBook&memberID={memberID}&bookID={bookID}
+- Register: POST /LibraryServer.php?action=register
+- Borrow Book: POST /LibraryServer.php?action=borrowBook&memberID={memberID}&bookID={bookID}
+- Return Book: POST /LibraryServer.php?action=returnBook&memberID={memberID}&bookID={bookID}
 - View Borrow History: GET /LibraryServer.php?action=viewBorrowHistory&memberID={memberID}
 - Retrieve Borrowed Books: GET /LibraryServer.php?action=retrieveBorrowedBooksByMember&memberID={memberID}
 
@@ -36,8 +36,9 @@ This project is a library management system for UTeM, which includes functionali
 
 - View Borrowed Books: GET /LibraryServer.php?action=viewBorrowedBooks
 - View Returned Books: GET /LibraryServer.php?action=viewReturnedBooks
-- Pending Member Registrations: GET /LibraryServer.php?action=viewPendingRegistrations
-- Approve Member: GET /LibraryServer.php?action=approveMember&memberID={memberID}
+- Pending Member Registrations: POST /LibraryServer.php?action=viewPendingRegistrations
+- Approve Member: POST /LibraryServer.php?action=approveMember&memberID={memberID}
+- Reject Member: POST /LibraryServer.php?action=rejectMember&memberID={memberID}
 - Retrieve Pending Members: GET /LibraryServer.php?action=retrievePendingMember
 
 ## Middleware Functions/Features
