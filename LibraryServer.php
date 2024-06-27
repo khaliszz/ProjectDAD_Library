@@ -67,7 +67,7 @@ class LibraryService {
                 $this->dbPDO->rollBack();
                 return array("error" => "Failed to borrow book in borrowedbook table");
             }
-
+    
             // Update books table
             $stmt = $this->dbPDO->prepare("UPDATE books SET copies = copies - 1 WHERE title = :title AND isbn = :isbn");
             $stmt->bindParam(':title', $title);
@@ -83,11 +83,6 @@ class LibraryService {
             $this->dbPDO->commit();
     
             return array("status" => "success", "message" => "Book borrowed successfully");
-    
-            // Commit transaction if successful
-            $this->dbPDO->commit();
-    
-            return array("success" => "Book borrowed successfully.");
         } catch (PDOException $e) {
             // Database error
             $this->dbPDO->rollBack(); // Rollback transaction on error
@@ -257,8 +252,7 @@ class LibraryService {
             if ($count > 0) {
                 // Username already exists
                 return array("status" => "error", "message" => "Username already exists");
-            }
-            else {
+            } else {
                 // Proceed with the registration
                 $stmt = $this->dbPDO->prepare("INSERT INTO member (username, password, memberStatus) VALUES (:username, :password, :memberStatus)");
                 $stmt->bindParam(':username', $username);
@@ -309,26 +303,38 @@ class LibraryService {
 
     public function approvedMember($memberID, $username, $password) {
         try {
-            
-            // Update member table
-            $stmt = $this->dbPDO->prepare("UPDATE member SET memberStatus = 'APPROVED' WHERE memberID = :memberID AND username = :username AND password = :password AND memberStatus = 'PENDING'");
+            // Update the member's status to approved in the database
+            $stmt = $this->dbPDO->prepare("UPDATE member SET memberStatus = 'APPROVED', username = :username, password = :password WHERE memberID = :memberID");
             $stmt->bindParam(':memberID', $memberID);
             $stmt->bindParam(':username', $username);
             $stmt->bindParam(':password', $password);
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if ($result) {
-                return array("results" => $result);
-                //return $result;
-            } else {
-                return array("message" => "Approved member successfully!");
-            }
     
+            if ($stmt->execute()) {
+                return array("status" => "success", "message" => "Member approved successfully");
+            } else {
+                return array("error" => "Failed to approve member");
+            }
         } catch (PDOException $e) {
-            
             return array("error" => "Database error: " . $e->getMessage());
         }
     }
+
+    public function rejectMember($memberID, $username, $password) {
+        try {
+            // Update the member's status to rejected in the database
+            $stmt = $this->dbPDO->prepare("DELETE FROM member WHERE memberID = :memberID");
+            $stmt->bindParam(':memberID', $memberID);
+    
+            if ($stmt->execute()) {
+                return array("status" => "success", "message" => "Member rejected successfully");
+            } else {
+                return array("error" => "Failed to reject member");
+            }
+        } catch (PDOException $e) {
+            return array("error" => "Database error: " . $e->getMessage());
+        }
+    }
+    
 
     public function retrievePendingMember() {
         try {
@@ -356,18 +362,17 @@ try {
             $response = $libraryService->retrieveBorrowedBooks();
         } elseif ($action == 'retrieve') {
             $response = $libraryService->retrieveBooks();
-        } elseif ($action == 'borrow' && isset($_GET['title']) && isset($_GET['isbn']) && isset($_GET['dateBorrowed'])) {
-            $response = $libraryService->borrowBook($_GET['title'], $_GET['isbn'], $_GET['dateBorrowed'], $_GET['status'], $_GET['memberID']);
+        } elseif ($action == 'borrow' && $_SERVER['REQUEST_METHOD'] == 'POST') {
+            $response = $libraryService->borrowBook($_POST['title'], $_POST['isbn'], $_POST['dateBorrowed'], $_POST['status'], $_POST['memberID']);
         } elseif ($action == 'retrieveBorrowedBooksByMember' && isset($_GET['memberID'])) {
             $memberID = $_GET['memberID'];
             $response = $libraryService->retrieveBorrowedBooksByMember($memberID);
-        } elseif ($action == 'returnBorrowedBook' && isset($_GET['id'], $_GET['title']) && isset($_GET['isbn']) && isset($_GET['memberID'])) {
-            $response = $libraryService->returnBorrowedBook($_GET['id'], $_GET['title'], $_GET['isbn'], $_GET['memberID']);
-            echo json_encode($response);
+        } elseif ($action == 'returnBorrowedBook' && $_SERVER['REQUEST_METHOD'] == 'POST') {
+            $response = $libraryService->returnBorrowedBook($_POST['id'], $_POST['title'], $_POST['isbn'], $_POST['memberID']);
         } elseif ($action == 'login' && isset($_GET['username']) && isset($_GET['password'])) {
             $response = $libraryService->login($_GET['username'], $_GET['password']);
-        } elseif ($action == 'register' && isset($_GET['username']) && isset($_GET['password']) && isset($_GET['memberStatus'])) {
-            $response = $libraryService->registerMember($_GET['username'], $_GET['password'], $_GET['memberStatus']);
+        } elseif ($action == 'register' && $_SERVER['REQUEST_METHOD'] == 'POST') {
+            $response = $libraryService->registerMember($_POST['username'], $_POST['password'], $_POST['memberStatus']);
         } elseif ($action == 'searchBorrowedBook' && isset($_GET['title'])) {
             $response = $libraryService->searchBorrowedBookByTitle($_GET['title']);
         } elseif ($action == 'searchBookByTitle' && isset($_GET['title'])) {
@@ -381,9 +386,11 @@ try {
             $response = $libraryService->searchBorrowedBookByID($_GET['memberID']);
         } elseif ($action == 'retrievePendingMember') {
             $response = $libraryService->retrievePendingMember();
-        } elseif ($action == 'approvedMember' && isset($_GET['memberID']) && isset($_GET['username']) && isset($_GET['password'])) {
-            $response = $libraryService->approvedMember($_GET['memberID'], $_GET['username'], $_GET['password']);
-        } else {
+        } elseif ($action == 'approvedMember' && $_SERVER['REQUEST_METHOD'] == 'POST') {
+            $response = $libraryService->approvedMember($_POST['memberID'], $_POST['username'], $_POST['password']);
+        } else if ($action == 'rejectMember' && $_SERVER['REQUEST_METHOD'] == 'POST') {
+            $response = $libraryService->rejectMember($_POST['memberID'], $_POST['username'], $_POST['password']);
+        }else {
             $response = array("error" => "Missing or invalid parameters");
         }
     } else {
